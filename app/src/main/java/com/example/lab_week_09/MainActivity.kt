@@ -1,6 +1,7 @@
 package com.example.lab_week_09
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -24,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -116,20 +118,34 @@ fun HomeContent(
                  TextField(
                     value = inputField.name,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                     label = { Text("Enter item") },
                     onValueChange = {
                         onInputValueChange(it)
                     }
-                )
+                 )
+
+                val context = LocalContext.current
 
                 Row {
-                    PrimaryTextButton(text = stringResource(
-                        id = R.string.button_click)
+                    PrimaryTextButton(
+                        text = stringResource(id = R.string.button_click)
                     ) {
-                        onButtonClick()
+                        if(inputField.name.isNotBlank()) {
+                            onButtonClick()
+                        } else {
+                            Toast.makeText(context, "Please enter a name before submitting", Toast.LENGTH_SHORT).show()
+                        }
                     }
 
-                    PrimaryTextButton(text = stringResource(id = R.string.button_navigate)) {
-                        navigateFromHomeToResult()
+                    PrimaryTextButton(
+                        text = stringResource(id = R.string.button_navigate)
+                    ) {
+                        if(listData.isNotEmpty()) {
+                            navigateFromHomeToResult()
+                        } else {
+                            Toast.makeText(context, "The data list cannot be empty to finish",
+                                Toast.LENGTH_SHORT)
+                        }
                     }
                 }
             }
